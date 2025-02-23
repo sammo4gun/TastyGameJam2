@@ -4,6 +4,7 @@ extends Node2D
 @onready var tutorial_timer = $UI_Layer/Timer
 @onready var ui_fade = $UI_Layer/CanvasModulate
 @onready var fade_out = $FadeOutScreen/CanvasModulate
+@onready var audio = $Audio/MainAmbience
 
 @export var fade_in_rate = 0.02
 @export var fade_out_rate = 0.2
@@ -15,6 +16,7 @@ var fade_in_tut = false
 var fade_out_tut = false
 
 var end_game_fade = false
+var full_volume
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,12 +25,14 @@ func _ready() -> void:
 	darkness.color = Color(brightness, brightness, brightness, 255)
 	tutorial_timer.wait_time = tutorial_text_delay
 	tutorial_timer.start()
+	full_volume = audio.volume_db
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if end_game_fade:
 		if fade_out.color[3] < 1:
 			fade_out.color[3] += delta * fade_out_rate
+			audio.volume_db -= 40 * delta * fade_out_rate
 		else:
 			get_tree().change_scene_to_file("res://endscreen.tscn") 
 	else:
@@ -66,4 +70,3 @@ func _on_final_candle_2_light() -> void:
 func _on_candle_candle_lit() -> void:
 	num_candles_done += 1
 	global.candles_done += 1
-	print(num_candles_done)

@@ -12,7 +12,7 @@ var t = 0
 
 func _ready() -> void:
 	print(global.candles_done)
-	text.text = str(global.candles_done) + " out of fifteen candles were lit."
+	text.text = str(global.candles_done) + " out of 15 candles were lit."
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

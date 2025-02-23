@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="TastyGameJam"
+config/name="Chandler"
 run/main_scene="res://starting_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -59,4 +59,4 @@ move_down={
 [rendering]
 
 renderer/rendering_method.web="forward_plus"
-environment/defaults/default_clear_color=Color(0.470076, 0.470076, 0.470076, 1)
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
