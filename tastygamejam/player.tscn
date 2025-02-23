@@ -64,7 +64,7 @@ var WALL_TILES_IDS = [
 
 var current_match_brightness = 0
 var match_life : float = MAX_MATCH_LIFE
-var match_running_out = true
+var match_running_out = false
 var stability = 1
 var rng = RandomNumberGenerator.new()
 var is_lit = true

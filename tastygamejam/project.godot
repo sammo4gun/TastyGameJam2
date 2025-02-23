@@ -14,6 +14,7 @@ config/name="Chandler"
 run/main_scene="res://starting_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+config/windows_native_icon="res://icon.ico"
 
 [autoload]
 
@@ -23,6 +24,7 @@ global="*res://global.gd"
 
 window/size/viewport_width=960
 window/size/viewport_height=500
+window/stretch/mode="viewport"
 
 [global_group]
 
