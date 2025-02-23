@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://ro7brb2v5xmq"]
+
+[ext_resource type="Script" path="res://starting_menu.gd" id="1_xbrk7"]
+[ext_resource type="Texture2D" uid="uid://dq5go3pu6nate" path="res://Assets/Openingscreen.png" id="2_5pagr"]
+[ext_resource type="AudioStream" uid="uid://k30udeypp4ei" path="res://Assets/ignite.wav" id="3_jdbju"]
+
+[node name="MarginContainer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_xbrk7")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_5pagr")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_jdbju")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

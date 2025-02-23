@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhlx8pflys11h"]
+
+[ext_resource type="Script" path="res://audio.gd" id="1_7jtrk"]
+[ext_resource type="AudioStream" uid="uid://dsjtgnurxh6sb" path="res://Assets/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.mp3" id="2_hp5sq"]
+
+[node name="Audio" type="Node2D"]
+script = ExtResource("1_7jtrk")
+
+[node name="MainAmbience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_hp5sq")
+volume_db = -10.111
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.85
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

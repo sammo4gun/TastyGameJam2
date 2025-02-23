@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://6cys6v18j8a2"
+path="res://.godot/imported/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.wav-d1e3a51e3b82e4cd0349782871b1b3b8.sample"
+
+[deps]
+
+source_file="res://Assets/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.wav"
+dest_files=["res://.godot/imported/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.wav-d1e3a51e3b82e4cd0349782871b1b3b8.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

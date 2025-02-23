@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://c27qgqobiq3sy"]
+
+[ext_resource type="PackedScene" uid="uid://bh2w2wp4hhhtx" path="res://player.tscn" id="1_8lb6i"]
+[ext_resource type="Script" path="res://camera_2d.gd" id="2_072x2"]
+[ext_resource type="PackedScene" uid="uid://dm2jrjjq1ihb3" path="res://wind_right.tscn" id="4_0l20d"]
+[ext_resource type="PackedScene" uid="uid://g48fcp5lmk5k" path="res://candle.tscn" id="4_7fdrq"]
+
+[node name="albiesworld" type="Node2D"]
+position = Vector2(590, 175)
+
+[node name="Player" parent="." instance=ExtResource("1_8lb6i")]
+position = Vector2(-373, 79)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(6, 91)
+script = ExtResource("2_072x2")
+
+[node name="Candle" parent="." instance=ExtResource("4_7fdrq")]
+position = Vector2(-316, 79)
+
+[node name="WindRight" parent="." instance=ExtResource("4_0l20d")]
+position = Vector2(-28, 219)

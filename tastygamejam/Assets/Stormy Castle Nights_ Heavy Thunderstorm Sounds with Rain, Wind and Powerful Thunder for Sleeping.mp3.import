@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dsjtgnurxh6sb"
+path="res://.godot/imported/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.mp3-07f152fba1769106c44f6abfc7eeeab5.mp3str"
+
+[deps]
+
+source_file="res://Assets/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.mp3"
+dest_files=["res://.godot/imported/Stormy Castle Nights_ Heavy Thunderstorm Sounds with Rain, Wind and Powerful Thunder for Sleeping.mp3-07f152fba1769106c44f6abfc7eeeab5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

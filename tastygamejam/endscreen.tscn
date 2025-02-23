@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://dym0u3oqgxsei"]
+
+[ext_resource type="Script" path="res://endscreen.gd" id="1_ar44f"]
+[ext_resource type="Texture2D" uid="uid://bs570yeaqrd0" path="res://Assets/EndScreen.png" id="2_qcmne"]
+
+[node name="EndScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ar44f")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_qcmne")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 249.0
+offset_top = 258.0
+offset_right = 705.0
+offset_bottom = 298.0
+text = "X / 15 Candles were Lit"
+
+[node name="Button" type="Button" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 205.0
+offset_top = 375.0
+offset_right = 752.0
+offset_bottom = 466.0
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

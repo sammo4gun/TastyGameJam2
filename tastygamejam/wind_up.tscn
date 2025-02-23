@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3 uid="uid://dcl30ce0dmpvv"]
+
+[ext_resource type="Script" path="res://windup.gd" id="1_12dek"]
+[ext_resource type="Texture2D" uid="uid://duqj0vmmjbghj" path="res://Assets/wind.png" id="2_vy8a5"]
+
+[sub_resource type="Curve" id="Curve_puc6o"]
+_data = [Vector2(0, 0.223094), 0.0, 0.0, 0, 0, Vector2(0.377399, 0.575336), 0.0, 0.0, 0, 0, Vector2(0.503198, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_gm231"]
+curve = SubResource("Curve_puc6o")
+
+[sub_resource type="Curve" id="Curve_hcgal"]
+min_value = -1.0
+_data = [Vector2(0, 0.03216), 0.0, 0.0, 0, 0, Vector2(0.202559, 1), 0.0, 0.0, 0, 0, Vector2(0.309168, -1), 0.0, 0.0, 0, 0, Vector2(0.503198, 0.993416), 0.0, 0.0, 0, 0, Vector2(0.722815, -1), 0.0, 0.0, 0, 0, Vector2(0.867804, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.0189921), 0.0, 0.0, 0, 0]
+point_count = 7
+
+[sub_resource type="Curve" id="Curve_sdyvu"]
+_data = [Vector2(0, -0.0139276), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_2vlqt"]
+curve_x = SubResource("Curve_hcgal")
+curve_y = SubResource("Curve_sdyvu")
+
+[sub_resource type="Curve" id="Curve_hbwf4"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.351812, 0.81565), 0.0, 0.0, 0, 0, Vector2(0.586354, 0.944037), 0.0, 0.0, 0, 0, Vector2(0.8742, 0.828817), 0.0, 0.0, 0, 0, Vector2(1, 0.114459), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_rumb7"]
+curve = SubResource("Curve_hbwf4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gkh3r"]
+resource_local_to_scene = true
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(100, 100, 1)
+inherit_velocity_ratio = 49.925
+spread = 0.0
+initial_velocity_min = 575.96
+initial_velocity_max = 872.59
+directional_velocity_min = 141.73
+directional_velocity_max = 141.73
+directional_velocity_curve = SubResource("CurveXYZTexture_2vlqt")
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_rumb7")
+alpha_curve = SubResource("CurveTexture_gm231")
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1yyqn"]
+resource_local_to_scene = true
+size = Vector2(217.25, 253)
+
+[node name="WindUp" type="Area2D" groups=["Wind"]]
+rotation = 3.14159
+script = ExtResource("1_12dek")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(1, -1)
+rotation = 1.57079
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_gkh3r")
+texture = ExtResource("2_vy8a5")
+trail_enabled = true
+trail_lifetime = 0.4
+trail_sections = 4
+trail_section_subdivisions = 96
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, -3)
+shape = SubResource("RectangleShape2D_1yyqn")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="GracePeriod" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="GracePeriod" to="." method="_on_grace_period_timeout"]

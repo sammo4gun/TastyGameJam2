@@ -1,0 +1,57 @@
+[gd_scene load_steps=10 format=3 uid="uid://g48fcp5lmk5k"]
+
+[ext_resource type="Script" path="res://candle.gd" id="1_fe1gs"]
+[ext_resource type="Texture2D" uid="uid://cm424qw74audx" path="res://Assets/candle_lit.png" id="2_7d4ri"]
+[ext_resource type="Texture2D" uid="uid://bsbv8wncu2ry0" path="res://Assets/light_basic.png" id="2_77vsy"]
+[ext_resource type="Texture2D" uid="uid://5xuk8xomlmgp" path="res://Assets/candle_unlit.png" id="2_yrj3c"]
+[ext_resource type="PackedScene" uid="uid://djbu6f3j1hned" path="res://fire.tscn" id="5_rfeay"]
+[ext_resource type="AudioStream" uid="uid://bx0n561d6v5wb" path="res://Assets/firestart.wav" id="6_s7ylq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jlj8c"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lgrn5"]
+radius = 11.0454
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_5vaey"]
+polygon = PackedVector2Array(-8, -7, -5, -9, -1, -10, 4, -9, 8, -7, 11, -3, 12, 1, 11, 6, 9, 10, 7, 12, 2, 14, -3, 13, -8, 11, -11, 7, -12, 1, -11, -3)
+
+[node name="Candle" type="StaticBody2D"]
+script = ExtResource("1_fe1gs")
+
+[node name="Unlit_sprite" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+texture = ExtResource("2_yrj3c")
+
+[node name="Lit_sprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, 1)
+texture = ExtResource("2_7d4ri")
+
+[node name="PlayerCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(0.530975, 0.530975)
+shape = SubResource("CircleShape2D_jlj8c")
+
+[node name="Area2D" type="Area2D" parent="." groups=["CandleFire"]]
+
+[node name="CandleCollision" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_lgrn5")
+
+[node name="CandleLight" type="PointLight2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(1.3, 1.3)
+color = Color(0.721079, 0.187449, 0.345573, 1)
+energy = 0.0
+shadow_enabled = true
+shadow_item_cull_mask = 6
+texture = ExtResource("2_77vsy")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, -1)
+occluder = SubResource("OccluderPolygon2D_5vaey")
+
+[node name="Fire" parent="." instance=ExtResource("5_rfeay")]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_s7ylq")

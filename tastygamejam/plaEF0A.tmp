@@ -1,0 +1,254 @@
+[gd_scene load_steps=10 format=3 uid="uid://bh2w2wp4hhhtx"]
+
+[ext_resource type="Texture2D" uid="uid://dl81h06ieuqw6" path="res://Assets/matchbody.png" id="1_0bhld"]
+[ext_resource type="Texture2D" uid="uid://bsbv8wncu2ry0" path="res://Assets/light_basic.png" id="1_v4y45"]
+[ext_resource type="Texture2D" uid="uid://cfh5sfe6umvry" path="res://Assets/playerbasic.png" id="2_7k6bu"]
+[ext_resource type="Texture2D" uid="uid://6ibbb2bb0gux" path="res://Assets/matchhead.png" id="2_132f8"]
+[ext_resource type="PackedScene" uid="uid://djbu6f3j1hned" path="res://fire.tscn" id="5_h0cvo"]
+
+[sub_resource type="GDScript" id="GDScript_o338r"]
+script/source = "extends CharacterBody2D
+
+@onready var matchlight = $HeldMatch/MatchLight
+@onready var matchhead = $HeldMatch/MatchHead
+@onready var matchFireHolder = $HeldMatch/FireHolder
+@onready var matchFire = $HeldMatch/FireHolder/Fire
+
+@onready var mainTileMap = get_parent().get_child(0)
+
+#export vars
+@export var SPEED = 300.0
+@export var ACCELERATION : float = 800
+@export var DECELERATION : float = 600
+
+@export var MAX_MATCH_LIFE : float = 800
+@export var MATCH_BURN_SPEED : float = 30;
+@export var STABLE_MATCH_BRIGHTNESS = 2;
+@export var MATCH_FLICKER_STRENGTH = 0.5;
+@export var MATCH_FLICKER_FREQ = 1;
+@export var MATCH_FLICKER_RECOVERY = 0.02 ;
+@export var MATCH_STABLE_CHANGE = 0.02 ;
+@export var WIND_BLOW_OUT_RANGE = 0.5
+@export var WIND_BLOW_OUT_TIME = 1000
+
+var CORRECT_HEAD_SCALING
+var CORRECT_LIGHT_SCALING
+var CORRECT_FIRE_SCALING
+
+var WALL_TILES_IDS = [
+	\"(6, 11)\",
+	\"(6, 10)\"
+]
+
+var current_match_brightness = 0
+var match_life : float = MAX_MATCH_LIFE
+var match_running_out = false
+var stability = 1
+var rng = RandomNumberGenerator.new()
+var is_lit = true
+var match_cell_pos;
+
+var current_wind_object = null;
+func _ready():
+	CORRECT_HEAD_SCALING = matchhead.scale[0]
+	CORRECT_LIGHT_SCALING = matchlight.scale[0]
+	CORRECT_FIRE_SCALING = matchFire.scale[0]
+	matchFireHolder.visible = true
+
+func _physics_process(delta: float) -> void:
+	handle_movement(delta)
+	handle_rotation();
+	
+func _process(delta: float) -> void:
+	handle_match_life(delta)
+	handle_wind(delta)
+
+func handle_wind(delta: float):
+	if current_wind_object != null:
+		if(current_wind_object.facing_direction > rotation + WIND_BLOW_OUT_RANGE or current_wind_object.facing_direction < rotation - WIND_BLOW_OUT_RANGE):
+			if(match_life > 0):
+				stability = 0.5
+				match_life -= delta*WIND_BLOW_OUT_TIME;
+
+func handle_match_life(delta: float) -> void:
+	if(match_running_out and match_life > 0):
+		match_life -= delta*MATCH_BURN_SPEED
+		
+		#check if match is in a wall
+		match_cell_pos = mainTileMap.local_to_map(mainTileMap.to_local(matchhead.global_position))
+		if str(mainTileMap.get_cell_atlas_coords(match_cell_pos)) in WALL_TILES_IDS:
+			extuinguish()
+		
+	if match_life <= 0:
+		extuinguish()
+	
+	if rng.randf() > stability:
+		current_match_brightness = (MATCH_FLICKER_STRENGTH) * current_match_brightness
+	
+	if current_match_brightness != STABLE_MATCH_BRIGHTNESS:
+		current_match_brightness +=  (STABLE_MATCH_BRIGHTNESS - current_match_brightness)*MATCH_FLICKER_RECOVERY
+	
+	#add some randomness
+	current_match_brightness += randf_range(-MATCH_STABLE_CHANGE, MATCH_STABLE_CHANGE) * current_match_brightness
+	stability += (1 - stability) *0.1
+	
+	matchlight.energy = current_match_brightness
+	matchhead.scale = Vector2(CORRECT_HEAD_SCALING * 2 * match_life/MAX_MATCH_LIFE,
+								CORRECT_HEAD_SCALING * 2 * match_life/MAX_MATCH_LIFE)
+	matchlight.scale = Vector2(CORRECT_LIGHT_SCALING * 2 * match_life/MAX_MATCH_LIFE,
+								CORRECT_LIGHT_SCALING * 2 * match_life/MAX_MATCH_LIFE)
+	matchFire.scale = Vector2(CORRECT_FIRE_SCALING * 2 * match_life/MAX_MATCH_LIFE,
+								CORRECT_FIRE_SCALING * 2 * match_life/MAX_MATCH_LIFE)
+
+func extuinguish():
+	match_life = 0
+	is_lit = false
+	matchFireHolder.visible = false
+	matchlight.visible = false
+	matchhead.visible = false
+
+func light():
+	match_life = MAX_MATCH_LIFE
+	is_lit = true
+	matchFireHolder.visible = true
+	matchlight.visible = true
+	matchhead.visible = true
+
+func handle_movement(delta: float) -> void:
+	var direction = Vector2.ZERO
+	var new_velocity = Vector2.ZERO
+
+	# Input for movement: Arrow keys or WASD
+	if Input.is_action_pressed(\"move_right\"):
+		direction.x += 1
+	if Input.is_action_pressed(\"move_left\"):
+		direction.x -= 1
+	if Input.is_action_pressed(\"move_down\"):
+		direction.y += 1
+	if Input.is_action_pressed(\"move_up\"):
+		direction.y -= 1
+
+	# Normalize the direction to ensure consistent movement speed in all directions
+	if direction != Vector2.ZERO:
+		direction = direction.normalized()
+	
+	# Apply acceleration
+	if direction != Vector2.ZERO:
+		new_velocity = velocity.move_toward(direction * SPEED
+		*
+		(0.8 + (0.2 * (get_global_mouse_position() - global_position).normalized().dot(direction.normalized()))), ACCELERATION * delta)
+	# Apply deceleration when there's no input
+	else:
+		new_velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
+	
+	
+	if (new_velocity-velocity).length() > 25:
+		stability -= 0.02
+	velocity = new_velocity
+	move_and_slide()
+
+func handle_rotation() -> void:
+	# Get the mouse position and calculate the angle to face it
+	var mouse_position = get_global_mouse_position()
+	var angle_to_mouse = (mouse_position - global_position).angle()
+
+	# Rotate the player to face the mouse
+	rotation = angle_to_mouse
+
+func _on_held_candle_area_entered(area: Area2D) -> void:
+	if area.is_in_group('CandleFire'):
+		var candle = area.get_parent()
+		if candle.is_lit:
+			match_life = MAX_MATCH_LIFE
+			if not is_lit: light()
+		elif match_life > 0:
+			match_life = MAX_MATCH_LIFE
+			if candle.FIRST_CANDLE:
+				match_running_out = true
+			candle.light()
+	elif area.is_in_group(\"Wind\"):
+		current_wind_object = area
+	else:
+		if match_running_out and is_lit:
+			extuinguish()
+	
+
+func _on_held_match_area_exited(area: Area2D) -> void:
+	if area.is_in_group(\"Wind\"):
+		current_wind_object = null
+
+
+func _on_held_match_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	print()
+"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bd6o0"]
+radius = 15.0
+height = 56.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2dc5o"]
+radius = 3.0
+height = 6.00001
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_mu1d4"]
+polygon = PackedVector2Array(15, -24, 0, 0, 9, 21, -7, 18, -16, 9, -18, -4, -14, -17, 0, -32)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 3
+collision_mask = 3
+script = SubResource("GDScript_o338r")
+ACCELERATION = 1500.0
+DECELERATION = 2000.0
+MAX_MATCH_LIFE = 600.0
+MATCH_BURN_SPEED = 45.0
+STABLE_MATCH_BRIGHTNESS = 1
+
+[node name="PlayerCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(5, -3)
+shape = SubResource("CapsuleShape2D_bd6o0")
+
+[node name="HeldMatch" type="Area2D" parent="." groups=["CandleFire", "Wind"]]
+position = Vector2(26, 3)
+
+[node name="MatchBody" type="Sprite2D" parent="HeldMatch"]
+position = Vector2(1, 6)
+rotation = 0.440729
+scale = Vector2(0.158227, 0.116059)
+texture = ExtResource("1_0bhld")
+
+[node name="MatchHead" type="Sprite2D" parent="HeldMatch"]
+rotation = 0.951072
+scale = Vector2(0.029124, 0.029124)
+texture = ExtResource("2_132f8")
+
+[node name="MatchLight" type="PointLight2D" parent="HeldMatch"]
+position = Vector2(4, -2)
+scale = Vector2(0.6, 0.6)
+color = Color(0.721079, 0.187449, 0.345573, 1)
+energy = 1.7
+shadow_enabled = true
+shadow_filter = 2
+texture = ExtResource("1_v4y45")
+
+[node name="MatchCollisionShape" type="CollisionShape2D" parent="HeldMatch"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_2dc5o")
+
+[node name="FireHolder" type="Node2D" parent="HeldMatch"]
+position = Vector2(1, 0)
+
+[node name="Fire" parent="HeldMatch/FireHolder" instance=ExtResource("5_h0cvo")]
+lifetime = 1.0
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(6, 1)
+occluder = SubResource("OccluderPolygon2D_mu1d4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -1.90735e-06)
+rotation = -1.5708
+scale = Vector2(0.613301, 0.613301)
+texture = ExtResource("2_7k6bu")
+
+[connection signal="area_entered" from="HeldMatch" to="." method="_on_held_candle_area_entered"]
+[connection signal="area_exited" from="HeldMatch" to="." method="_on_held_match_area_exited"]

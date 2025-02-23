@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://bugylwajvuqrr"]
+
+[ext_resource type="Texture2D" uid="uid://xrryi2sy4jfu" path="res://Assets/suitofarmor.png" id="1_71tpy"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xccq2"]
+radius = 11.0
+height = 60.0014
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cr4gl"]
+polygon = PackedVector2Array(-25, 3, 0, 9, 30, 0, 29, 12, 18, 12, 39, 12, 29, 11, 31, -7, 17, -16, 0, -19, -14, -17, -29, -10)
+
+[node name="SuitofArmor" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_71tpy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+rotation = -1.57148
+shape = SubResource("CapsuleShape2D_xccq2")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_cr4gl")
+occluder_light_mask = 5
+
+[node name="MatchCollider" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MatchCollider"]
+position = Vector2(0, -5)
+rotation = -1.57148
+shape = SubResource("CapsuleShape2D_xccq2")

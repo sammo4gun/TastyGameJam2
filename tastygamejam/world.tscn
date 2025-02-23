@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://5qb4u551ryiu"]
+
+[ext_resource type="PackedScene" uid="uid://ymxpjsjrd8cd" path="res://player.tscn" id="1_lieey"]
+[ext_resource type="PackedScene" uid="uid://b83a116k8ifa5" path="res://candle.tscn" id="2_qxjld"]
+
+[node name="World" type="Node2D"]
+
+[node name="player" parent="." instance=ExtResource("1_lieey")]
+MAX_CANDLE_DURATION = 10.0
+CANDLE_BURN_SPEED = 1000.0
+
+[node name="Candle" parent="." instance=ExtResource("2_qxjld")]
+position = Vector2(436, 232)
